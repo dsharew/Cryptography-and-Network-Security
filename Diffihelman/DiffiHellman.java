@@ -1,0 +1,57 @@
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.TreeSet;
+public class DiffiHellman {
+	public static int q,a;
+	public static int xa,xb;
+public static void main(String[] args) {
+	generateParameters();
+	System.out.println("q:"+q+" a:"+a);
+	Random r=new Random();
+	xa=Math.abs(r.nextInt());
+	System.out.println("Xa:"+xa);
+	int orga=xa;
+	xb=Math.abs(r.nextInt());
+	System.out.println("Xb:"+xb);
+	int orgb=xb;
+	xa=pwr(a,xa,q);
+	xb=pwr(a,xb,q);
+	System.out.println("A:"+pwr(xb,orga,q));
+	System.out.println("B:"+pwr(xa,orgb,q));
+	
+}
+public static int pwr(int base,int exp,int n){
+		if(exp==0){
+			return 1;
+		}
+		if(exp==1)
+			return base%n;
+		if(exp%2==0){
+			int tmp=pwr(base,exp/2,n);
+			return ((tmp%n)*(tmp%n)%n);
+		}
+		
+		else
+			return ((base%n)*pwr(base,exp-1,n))%n;
+	}
+	public static void generateParameters(){
+		int plist[]={2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103};
+		Random rand=new Random();
+		q=plist[Math.abs(rand.nextInt())%(plist.length-1)];
+		a=findPrimitiveRoot(q);
+	}
+private static int findPrimitiveRoot(int num) {
+		TreeSet<Integer>list=new TreeSet<Integer>();
+		for(int j=1;j<num;++j){
+			list.clear();
+			for(int i=0;i<num;++i){
+				list.add(pwr(j,i,num));
+				if(list.size()!=i+1) break;
+			}
+			if(list.size()==num-1){
+				return j;
+			}
+		}
+		return 0;
+	}
+}
